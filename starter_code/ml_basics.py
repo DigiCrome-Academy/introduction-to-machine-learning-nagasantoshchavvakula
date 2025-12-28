@@ -28,7 +28,11 @@ def normalize_features(X):
                [1.  , 1.  ]])
     """
     # TODO: Implement min-max normalization
-    pass
+    X_min = np.min(X, axis=0)
+    X_max = np.max(X, axis=0)
+    X_normalized = (X - X_min) / (X_max - X_min)
+    return X_normalized
+    # pass
 
 
 def handle_missing_values(X, strategy='mean'):
@@ -50,7 +54,21 @@ def handle_missing_values(X, strategy='mean'):
                [5., 3.]])
     """
     # TODO: Implement missing value handling
-    pass
+    X_filled = X.copy()
+    for i in range(X.shape[1]):
+        column = X[:, i]
+        nan_mask = np.isnan(column)
+        if strategy == 'mean':
+            mean_value = np.nanmean(column)
+            column[nan_mask] = mean_value
+        elif strategy == 'median':
+            median_value = np.nanmedian(column)
+            column[nan_mask] = median_value
+        elif strategy == 'zero':
+            column[nan_mask] = 0
+        X_filled[:, i] = column
+    return X_filled
+    # pass
 
 
 def split_data(X, y, test_size=0.2, random_state=42):
@@ -69,7 +87,11 @@ def split_data(X, y, test_size=0.2, random_state=42):
     Hint: Use sklearn.model_selection.train_test_split
     """
     # TODO: Implement train-test split
-    pass
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state
+    )
+    return X_train, X_test, y_train, y_test
+    # pass
 
 
 def fit_linear_regression(X_train, y_train):
@@ -86,7 +108,10 @@ def fit_linear_regression(X_train, y_train):
     Hint: Use sklearn.linear_model.LinearRegression
     """
     # TODO: Create and train a linear regression model
-    pass
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    return model
+    # pass
 
 
 def predict_linear(model, X_test):
@@ -101,7 +126,9 @@ def predict_linear(model, X_test):
         numpy.ndarray: Predictions
     """
     # TODO: Use the model to make predictions
-    pass
+    LinearRegression_predictions = model.predict(X_test)
+    return LinearRegression_predictions
+    # pass
 
 
 def fit_logistic_regression(X_train, y_train):
@@ -118,7 +145,10 @@ def fit_logistic_regression(X_train, y_train):
     Hint: Use sklearn.linear_model.LogisticRegression with max_iter=1000
     """
     # TODO: Create and train a logistic regression model
-    pass
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_train, y_train)
+    return model
+    # pass
 
 
 def predict_class(model, X_test):
@@ -133,7 +163,9 @@ def predict_class(model, X_test):
         numpy.ndarray: Predicted class labels
     """
     # TODO: Use the model to predict class labels
-    pass
+    LogisticRegression_predictions = model.predict(X_test)
+    return LogisticRegression_predictions
+    # pass
 
 
 def calculate_mse(y_true, y_pred):
@@ -156,7 +188,9 @@ def calculate_mse(y_true, y_pred):
         0.375
     """
     # TODO: Calculate and return MSE
-    pass
+    mse = np.mean((y_true - y_pred) ** 2)
+    return mse
+    # pass
 
 
 def calculate_accuracy(y_true, y_pred):
@@ -179,4 +213,6 @@ def calculate_accuracy(y_true, y_pred):
         0.8
     """
     # TODO: Calculate and return accuracy
-    pass
+    accuracy = np.mean(y_true == y_pred)
+    return accuracy
+    # pass
