@@ -1,0 +1,38 @@
+# Virtual environment folder
+myVenv/
+
+# Python cache files
+__pycache__/
+*/__pycache__/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Pytest cache
+.pytest_cache/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Environment variables
+.env
+
+# VS Code settings folder (if you use VS Code)
+.vscode/
+
+# MacOS system files
+.DS_Store
+
+# Other IDE/editor folders you want to ignore, e.g.:
+.idea/
