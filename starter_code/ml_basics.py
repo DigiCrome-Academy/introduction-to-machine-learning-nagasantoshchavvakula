@@ -28,10 +28,21 @@ def normalize_features(X):
                [1.  , 1.  ]])
     """
     # TODO: Implement min-max normalization
+    if X.size == 0:
+        raise ValueError("Input array X should not be empty")
+    
+    X = np.asarray(X, dtype=float)
+
     X_min = np.min(X, axis=0)
     X_max = np.max(X, axis=0)
-    X_normalized = (X - X_min) / (X_max - X_min)
+
+    denominator = X_max - X_min
+    denominator[denominator == 0] = 1  # Prevent division by zero
+    X_normalized = (X - X_min) / denominator
     return X_normalized
+
+    # X_normalized = (X - X_min) / (X_max - X_min)
+    # return X_normalized
     # pass
 
 
@@ -54,19 +65,28 @@ def handle_missing_values(X, strategy='mean'):
                [5., 3.]])
     """
     # TODO: Implement missing value handling
-    X_filled = X.copy()
-    for i in range(X.shape[1]):
-        column = X[:, i]
+    if X.size == 0:
+        raise ValueError("Input array X should not be empty")
+
+    X_filled = np.asarray(X, dtype=float).copy()
+    for col in range(X_filled.shape[1]):
+        column = X_filled[:, col]
         nan_mask = np.isnan(column)
+
+        if not nan_mask.any():
+            continue
+
         if strategy == 'mean':
-            mean_value = np.nanmean(column)
-            column[nan_mask] = mean_value
+            fill_value = np.nanmean(column)
         elif strategy == 'median':
-            median_value = np.nanmedian(column)
-            column[nan_mask] = median_value
+            fill_value = np.nanmedian(column)
         elif strategy == 'zero':
-            column[nan_mask] = 0
-        X_filled[:, i] = column
+            fill_value = 0.0
+        else:
+            raise ValueError("Invalid strategy. Use 'mean', 'median', or 'zero'.")
+        
+        column[nan_mask] = fill_value
+
     return X_filled
     # pass
 
@@ -87,6 +107,9 @@ def split_data(X, y, test_size=0.2, random_state=42):
     Hint: Use sklearn.model_selection.train_test_split
     """
     # TODO: Implement train-test split
+    if len(X) == 0 or len(y) == 0:
+        raise ValueError("Input arrays X and y should not be empty")
+    
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state
     )
@@ -126,8 +149,8 @@ def predict_linear(model, X_test):
         numpy.ndarray: Predictions
     """
     # TODO: Use the model to make predictions
-    LinearRegression_predictions = model.predict(X_test)
-    return LinearRegression_predictions
+    y_pred = model.predict(X_test)
+    return y_pred
     # pass
 
 
@@ -145,7 +168,11 @@ def fit_logistic_regression(X_train, y_train):
     Hint: Use sklearn.linear_model.LogisticRegression with max_iter=1000
     """
     # TODO: Create and train a logistic regression model
-    model = LogisticRegression(max_iter=1000)
+    model = LogisticRegression(
+        max_iter=1000,
+        solver='lbfgs',
+        # n_jobs=-1
+        )
     model.fit(X_train, y_train)
     return model
     # pass
@@ -163,8 +190,8 @@ def predict_class(model, X_test):
         numpy.ndarray: Predicted class labels
     """
     # TODO: Use the model to predict class labels
-    LogisticRegression_predictions = model.predict(X_test)
-    return LogisticRegression_predictions
+    y_pred = model.predict(X_test)
+    return y_pred
     # pass
 
 
@@ -188,6 +215,9 @@ def calculate_mse(y_true, y_pred):
         0.375
     """
     # TODO: Calculate and return MSE
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+
     mse = np.mean((y_true - y_pred) ** 2)
     return mse
     # pass
@@ -213,6 +243,8 @@ def calculate_accuracy(y_true, y_pred):
         0.8
     """
     # TODO: Calculate and return accuracy
+    y_true = np.asarray(y_true, dtype=int)
+    y_pred = np.asarray(y_pred, dtype=int)
     accuracy = np.mean(y_true == y_pred)
     return accuracy
     # pass
