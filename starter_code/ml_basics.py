@@ -171,7 +171,8 @@ def fit_logistic_regression(X_train, y_train):
     model = LogisticRegression(
         max_iter=1000,
         solver='lbfgs',
-        # n_jobs=-1
+        # n_jobs=-1 # In newer versions of scikit-learn, n_jobs is deprecated for LogisticRegression and has no effect.
+                    # commented it out to keep code forward compatible and warning-free.
         )
     model.fit(X_train, y_train)
     return model
